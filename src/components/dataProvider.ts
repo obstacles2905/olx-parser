@@ -2,7 +2,7 @@ import * as https from "https";
 
 export class DataProvider {
     async fetchRawHtml() {
-        const url = "https://www.olx.ua/list/q-forza-horizon-4/";
+        const url = "https://www.olx.ua/list/q-forza-horizon-4/?search%5Bfilter_float_price%3Afrom%5D=500";
 
         return new Promise(((resolve, reject) => {
             https.get(url, {}, response => {

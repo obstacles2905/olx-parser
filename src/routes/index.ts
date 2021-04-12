@@ -9,7 +9,7 @@ router.get("/", async (request: Request, response: Response, next) => {
     const rawHtml = await dataProvider.fetchRawHtml();
 
     const parser = new HtmlParser();
-    parser.parseRawHtml(rawHtml);
+    const offerDetails = parser.getOffersDetails(rawHtml);
 
-    response.status(201).send("hello world");
+    response.status(201).send(offerDetails);
 });
