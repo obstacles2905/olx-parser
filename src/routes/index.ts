@@ -1,6 +1,6 @@
 import express, {Request, Response} from "express";
 import {DataProvider} from "../components/dataProvider";
-import {HtmlParser} from "../components/parser";
+import {HtmlParser} from "../components/htmlParser";
 import * as redis from "redis";
 import {isOffersArraysEqual} from "../utils/utils";
 import {IOfferDetails} from "../interfaces/IOfferDetails";
@@ -12,7 +12,6 @@ const redisClient = redis.createClient(redisPort);
 
 router.get("/", async (request: Request, response: Response) => {
     const url = "https://www.olx.ua/list/q-forza-horizon-4/?search%5Bfilter_float_price%3Afrom%5D=500";
-
     const dataProvider = new DataProvider(url);
     const rawHtml = await dataProvider.fetchRawHtml();
 
