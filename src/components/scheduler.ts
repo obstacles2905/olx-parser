@@ -45,11 +45,11 @@ export class Scheduler extends IScheduler {
 
     public async schedule() {
         const url = "https://www.olx.ua/list/q-forza-horizon-4/?search%5Bfilter_float_price%3Afrom%5D=500";
-        const dataProvider = new DataProvider(url);
+        const dataProvider = new DataProvider();
         const htmlParser = new HtmlParser();
 
         const checker = new Checker(dataProvider, htmlParser, redisClient);
-        return checker.performSingleCheck();
+        return checker.performSingleCheck(url);
     }
 
     start() {

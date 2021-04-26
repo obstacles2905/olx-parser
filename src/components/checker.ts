@@ -12,13 +12,41 @@ export class Checker {
         private redisClient: RedisClient
     ) {}
 
-    async performSingleCheck(): Promise<IOfferDetails[]> {
-        const url = "https://www.olx.ua/list/q-forza-horizon-4/?search%5Bfilter_float_price%3Afrom%5D=500";
-        const rawHtml = await this.dataProvider.fetchRawHtml();
+    async performSingleCheck(url: string): Promise<IOfferDetails[]> {
+        const rawHtml = await this.dataProvider.fetchRawHtml(url);
 
-        const offersDetails: IOfferDetails[] = this.htmlParser.getOffersDetails(rawHtml);
+        const offers = this.htmlParser.getOffersDetails(rawHtml);
+        const offersFromRedis = await this.fetchOffersFromRedis(url);
 
-        const offersDetailsFromRedis: IOfferDetails[] = await new Promise((resolve, reject) =>
+        const isEqual = isOffersArraysEqual(offers, offersFromRedis);
+        if (!isEqual) {
+            logger.info(offers);
+            this.redisClient.setex(url, 3600, JSON.stringify(offers));
+            return offers;
+        }
+
+        logger.info('No new offers are found');
+        return [];
+    }
+
+    async performInitializationQuery(url: string): Promise<IOfferDetails[]> {
+        const offersFromRedis = await this.fetchOffersFromRedis(url);
+
+        if (offersFromRedis.length !== 0) {
+            logger.info('Fetched from Redis', offersFromRedis);
+            return offersFromRedis;
+        }
+
+        const rawHtml = await this.dataProvider.fetchRawHtml(url);
+
+        const offersFromQuery = await this.htmlParser.getOffersDetails(rawHtml);
+        logger.info(`Fetched from query ${url} `, offersFromQuery);
+
+        return offersFromQuery;
+    }
+
+    async fetchOffersFromRedis(url: string): Promise<IOfferDetails[]> {
+        return new Promise((resolve, reject) =>
             this.redisClient.get(url, (err, data) => {
                 if (err) {
                     reject(err);
@@ -34,14 +62,5 @@ export class Checker {
                 }
             })
         );
-
-        const isEqual = isOffersArraysEqual(offersDetails, offersDetailsFromRedis);
-        if (!isEqual) {
-            logger.info(offersDetails);
-            this.redisClient.setex(url, 3600, JSON.stringify(offersDetails));
-        }
-
-        logger.info('No new offers are found');
-        return offersDetails;
     }
 }

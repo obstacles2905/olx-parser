@@ -1,15 +1,9 @@
 import * as https from "https";
 
 export class DataProvider {
-    private url: string;
-
-    constructor(url: string) {
-        this.url = url;
-    }
-
-    async fetchRawHtml() {
+    async fetchRawHtml(url: string) {
         return new Promise(((resolve, reject) => {
-            https.get(this.url, {}, response => {
+            https.get(url, {}, response => {
                 let htmlData: any = "";
                 response.on("data", data => {
                     htmlData += data;

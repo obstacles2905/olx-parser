@@ -19,10 +19,12 @@
   },
   "homepage": "https://github.com/obstacles2905/olx-parser#readme",
   "dependencies": {
+    "@types/cors": "^2.8.10",
     "@types/cron": "^1.7.2",
     "@types/dotenv": "^8.2.0",
     "@types/pg": "^7.14.11",
     "@types/redis": "^2.8.28",
+    "cors": "^2.8.5",
     "cron": "^1.8.2",
     "cronstrue": "^1.112.0",
     "db-migrate": "^0.11.12",
