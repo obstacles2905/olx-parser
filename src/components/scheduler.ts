@@ -8,7 +8,7 @@ import * as redis from "redis";
 import cronstrue from "cronstrue";
 
 //TODO move to config
-const CRON_EXPRESSION = "0 0 * * * *";
+const CRON_EXPRESSION = "0 */30 * * * *";
 
 let onTickRunning = false;
 
@@ -40,7 +40,7 @@ export class Scheduler extends IScheduler {
         const timezone = '';
         const runOnInit = false;
         this.cronJob = new CronJob(CRON_EXPRESSION, onTick, onCompleted, start, timezone, this, runOnInit);
-        logger.info(`Import data from historian every : ${cronstrue.toString(CRON_EXPRESSION)}`);
+        logger.info(`Data's being synchronized ${cronstrue.toString(CRON_EXPRESSION)}`);
     }
 
     public async schedule() {
@@ -54,5 +54,9 @@ export class Scheduler extends IScheduler {
 
     start() {
         this.cronJob.start();
+    }
+
+    async terminate(reason: string): Promise<void> {
+        this.cronJob.stop();
     }
 }

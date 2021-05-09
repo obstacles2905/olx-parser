@@ -29,7 +29,7 @@ export class Checker {
         return [];
     }
 
-    async performInitializationQuery(url: string): Promise<IOfferDetails[]> {
+    async fetchOffers(url: string): Promise<IOfferDetails[]> {
         const offersFromRedis = await this.fetchOffersFromRedis(url);
 
         if (offersFromRedis.length !== 0) {

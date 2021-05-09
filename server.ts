@@ -6,6 +6,7 @@ import cors from "cors";
 
 import {logger} from "./src/logger";
 import {Scheduler} from "./src/components/scheduler";
+import {IShutdownWork} from "./src/interfaces/IScheduler";
 dotenv.config();
 
 const port = process.env.APPLICATION_PORT;
@@ -18,8 +19,17 @@ app.use(cors());
 
 app.use("/", router);
 
-const server = app.listen(port, () => {
-    logger.info(`Server is running on ${port}`)
+const shutdownWork: IShutdownWork[] = [];
+
+const server = app.listen(port, async () => {
+    logger.info(`Server is running on ${port}`);
+
+    // logger.info(`Shutting down running scheduler...`);
+    // for (const work of shutdownWork) {
+    //     logger.info(work.title);
+    //     await work.shutdown();
+    // }
+    // logger.info(`Shutting down running scheduler...done`);
 });
 
 const disableJobParam = '--disable-job-scheduling';
@@ -28,9 +38,13 @@ if (jobSchedulingDisabled) {
     logger.info(`Job scheduling disabled with ${disableJobParam} parameter.`);
 } else {
     (async function(): Promise<void> {
-        const scheduler = new Scheduler();
+        // const scheduler = new Scheduler();
+        // shutdownWork.push({
+        //     title: 'Stopping any ongoing unit-of-work',
+        //     shutdown: () => scheduler.terminate('SAM Historian importer process going down.'),
+        // });
 
-        scheduler.start();
+        // scheduler.start();
     })();
 }
 
