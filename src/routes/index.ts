@@ -17,7 +17,7 @@ router.get("/", async (request: Request, response: Response) => {
         response.status(201).send([]);
         return;
     }
-    console.log("1111111111111111")
+    console.log("22222222222222222")
     const filters = 'search%5Bfilter_float_price%3Afrom%5D=500';
 
     const olxUrl = `https://www.olx.ua/list/q-${queryParams.offer}/?${filters}`;
